@@ -101,7 +101,6 @@ class TopView: View(){
                     hbox(35) {
                         vbox(0){
                             label ("USFM Reader"){
-
                                 style {
                                     fontWeight = FontWeight.EXTRA_BOLD
                                     fontSize = 25.px
@@ -176,7 +175,7 @@ class TopView: View(){
                                 prefWidth = 50.0
                             }
                             // field for a button to change text size
-                            button("Change font Size") {
+                            button("Change Font Size") {
                                 // when pressed updates font size
                                 action {
                                     if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
@@ -247,9 +246,8 @@ class CenterView: View(){
     override val root = VBox()
     // the chapter text
     var bibleText = SimpleStringProperty()
-    // the font text
+    // the font and size of the Bible verses
     var bibleFont = SimpleObjectProperty<Font>(Font.font("Noto Naskh Arabic UI", FontWeight.NORMAL, 15.0))
-
     // form to allow to read selection
     init {
         with(root) {
@@ -263,8 +261,6 @@ class CenterView: View(){
                         textAlignmentProperty().value = TextAlignment.CENTER
                         fontProperty().bind(bibleFont)
                     }
-                    //useMaxWidth = true
-                    //useMaxHeight = true
                 }
                 prefHeight = 1000.0
             }
@@ -396,7 +392,7 @@ class MyController: Controller()  {
             if(it.contains("\\v")){
                 // substring for footmarks
                 var substr = ""
-                // if found sets substring eqaul to the footmark
+                // if found sets substring equal to the footmark
                 if(it.contains("\\f")){
                     substr = it.substring(it.indexOf("\\f"), it.indexOf("\\f*") + 3)
                 }
