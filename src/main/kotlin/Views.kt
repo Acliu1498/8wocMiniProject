@@ -159,9 +159,6 @@ class TopView: View(){
                                             myController.search(
                                                     book.value, chapter.value, verseStart.value, verseEnd.value))
 
-                                } else {
-                                    // else notify user
-                                    centerView.updateText("Invalid, try again")
                                 }
                             }
                         }
@@ -179,7 +176,18 @@ class TopView: View(){
                                 // when pressed updates font size
                                 action {
                                     if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
+                                        if (book.value != null && chapter.value != null && language.value != null) {
+                                            centerView.updateText(
+                                                    myController.search(
+                                                            book.value, chapter.value, verseStart.value, verseEnd.value))
+
+                                        }
                                         centerView.updateFontSize(textSize.doubleValue())
+                                    }
+                                    else{
+                                        // else notify user
+                                        centerView.updateText("Invalid, try again")
+                                        textSize.value = 15
                                     }
                                 }
 
