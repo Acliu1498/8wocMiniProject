@@ -115,16 +115,25 @@ class TopView: View(){
                         vbox(5) {
                             label("Book:")
                             combobox(book, books)
+                            style{
+                                fontFamily = "Noto Naskh Arabic UI"
+                            }
                         }
                         // chapter field
                         vbox(5) {
                             label("Chapter:")
                             combobox(chapter, chapters)
+                            style{
+                                fontFamily = "Noto Naskh Arabic UI"
+                            }
                         }
                         // language field
                         vbox(5) {
                             label("Language:")
                             combobox(language, languages)
+                            style{
+                                fontFamily = "Noto Naskh Arabic UI"
+                            }
                         }
 
                         vbox(5) {
