@@ -19,18 +19,17 @@ class Door43Manager(private val api: Api = Api()){
     /**
      * this function gets the number of languages in the api
      */
-    fun getLanguages(): List<String>{
+    fun getLanguages(): Map<String, Pair<String, String>>{
         // list to be returned
-        var ret = ArrayList<String>()
+        var ret = HashMap<String, Pair<String, String>>()
         // checks if had be recieved
         if(retrieved.isSuccessful){
             for (language in retrieved.body().languages){
-                if (getBooks(language.title) != null) {
-                    ret.add(language.title)
+                if (getBooks(language.title).isNotEmpty()) {
+                    ret[language.title] = Pair(language.identifier,  language.direction)
                 }
             }
         }
-        ret.sort()
         return ret
     }
 
@@ -38,7 +37,7 @@ class Door43Manager(private val api: Api = Api()){
      * This function gets the books from the door43 api given a language
      * returns as a list of strings
      */
-    fun getBooks(language: String): List<String>?{
+    fun getBooks(language: String): List<String>{
         // books to be returned
         selectedBooks.clear()
         val books = ArrayList<String>()
@@ -54,9 +53,7 @@ class Door43Manager(private val api: Api = Api()){
                     books.add(book.title)
                 }
             }
-        }catch (e: NullPointerException){
-            return null
-        }
+        }catch (e: NullPointerException){}
         return books
     }
 
@@ -114,19 +111,18 @@ class Door43Manager(private val api: Api = Api()){
      * helper function that gets the USFM file given a book
      * selected books must already have data
      */
-    fun getUSFM(book: String): String?{
+    fun getUSFM(book: String): String{
+        var text = ""
         try {
             // searches through the formats of the selected books
             for(format in selectedBooks.find { it.title == book }!!.formats){
                 // if the format is of type USFM then return
                 if(format.format == "text/usfm"){
-                    return URL(format.url).readText()
+                    text = URL(format.url).readText()
                 }
             }
-        } catch (e: NullPointerException){
-            return null
-        }
-        return null
+        } catch (e: NullPointerException){}
+        return text
 
     }
 

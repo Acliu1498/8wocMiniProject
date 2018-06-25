@@ -11,7 +11,7 @@ import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
 //import sun.font.FontFamily
 import tornadofx.*
-import java.io.File
+import java.util.*
 
 /**
  * Alex Liu, Jennifer Huang - Wycliffe Associates - 6/20/2018 - 8wocMiniChallenge
@@ -42,7 +42,7 @@ class TopView: View(){
     // the controller for the application
     private val myController = MyController()
     // the available languages
-    private val languages = FXCollections.observableArrayList<String>(myController.getLanguages())
+    private val languages = FXCollections.observableArrayList<String>(myController.getLanguages().keys.sorted())
     // string property to hold the language info
     private val language = SimpleStringProperty("English")
     // A collection to hold the names of all the books of the Bible
@@ -63,6 +63,7 @@ class TopView: View(){
     private val centerView = find(CenterView::class)
     // the size of the text
     private val textSize = SimpleIntegerProperty(centerView.getFontSize().toInt())
+    private val resourceBundle = myController.getResourceBundle(Locale.getDefault())
 
     override val root = Form()
     // form to allow user to make a selection
@@ -100,19 +101,17 @@ class TopView: View(){
                     // displays form horizontally
                     hbox(35) {
                         vbox(0){
-                            label ("USFM Reader"){
+                            label (resourceBundle.getString("USFM_Reader")){
                                 style {
                                     fontWeight = FontWeight.EXTRA_BOLD
                                     fontSize = 25.px
                                 }
                                 wrapTextProperty().set(true)
                             }
-
                         }
-
                         // book field
                         vbox(5) {
-                            label("Book:")
+                            label(resourceBundle.getString("Book"))
                             combobox(book, books)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
@@ -120,7 +119,7 @@ class TopView: View(){
                         }
                         // chapter field
                         vbox(5) {
-                            label("Chapter:")
+                            label(resourceBundle.getString("Book"))
                             combobox(chapter, chapters)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
@@ -128,23 +127,22 @@ class TopView: View(){
                         }
                         // language field
                         vbox(5) {
-                            label("Language:")
+                            label(resourceBundle.getString("Language"))
                             combobox(language, languages)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
                             }
                         }
-
                         vbox(5) {
-                            label("From: ")
+                            label(resourceBundle.getString("From"))
                             combobox(verseStart, verses)
                         }
                         vbox(5) {
-                            label ("To: ")
+                            label (resourceBundle.getString("To"))
                             combobox(verseEnd, verses)
                         }
                         // search field
-                        button("Search") {
+                        button(resourceBundle.getString("Search")) {
                             setPrefWidth(90.00)
                             setPrefHeight(50.00)
                             style{
@@ -158,21 +156,22 @@ class TopView: View(){
                                     centerView.updateText(
                                             myController.search(
                                                     book.value, chapter.value, verseStart.value, verseEnd.value))
+                                } else {
+                                    // else notify user
+                                    centerView.updateText("Invalid, try again")
 
                                 }
                             }
                         }
-
                         addClass(AppStyle.wrapper)
                     }
-
                     hbox(20) {
-                        field("Text Size:") {
+                        field(resourceBundle.getString("Text_Size")) {
                             textfield(textSize){
                                 prefWidth = 50.0
                             }
                             // field for a button to change text size
-                            button("Change Font Size") {
+                            button(resourceBundle.getString("Change_Text_Size")) {
                                 // when pressed updates font size
                                 action {
                                     if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
@@ -190,14 +189,11 @@ class TopView: View(){
                                         textSize.value = 15
                                     }
                                 }
-
-
                             }
                         }
-
                         field {
-                            label("Chapters:")
-                            button("Prev") {
+                            label(resourceBundle.getString("Chapters"))
+                            button(resourceBundle.getString("Prev")) {
                                 action {
                                     // checks if the chapter can be decremented
                                     if (chapter.value.toInt() - 1 < 1) {
@@ -216,9 +212,8 @@ class TopView: View(){
                                     centerView.updateText(myController.search(
                                             book.value, chapter.value, null ,null))
                                 }
-
                             }
-                            button("Next") {
+                            button(resourceBundle.getString("Next")) {
                                 action {
                                     // checks if chapter can be incremented
                                     if (chapter.value.toInt() + 1 > chapters.size) {
@@ -239,7 +234,6 @@ class TopView: View(){
                                     verses.clear()
                                     verses.addAll(myController.getVerses(book.value, chapter.value))
                                 }
-
                             }
                         }
                     }
@@ -256,6 +250,7 @@ class CenterView: View(){
     var bibleText = SimpleStringProperty()
     // the font and size of the Bible verses
     var bibleFont = SimpleObjectProperty<Font>(Font.font("Noto Naskh Arabic UI", FontWeight.NORMAL, 15.0))
+
     // form to allow to read selection
     init {
         with(root) {
@@ -341,7 +336,7 @@ class MyController: Controller()  {
     /**
      * Temp Help function to get a list of languages
      */
-    fun getLanguages(): List<String>{
+    fun getLanguages(): Map<String, Pair<String, String>>{
         return door43Manager.getLanguages()
     }
 
@@ -375,14 +370,16 @@ class MyController: Controller()  {
         } else {
             ArrayList(lines.subList(lines.indexOf("\\c $chapter"), lines.size))
         }
-        // gets a sublist if only certain verses are needed
-        if((verseStart != null && verseEnd != null)){
-            // finds the start and end
-            val start = lines.indexOf(lines.find { i -> i.contains("\\v $verseStart")})
-            val end = lines.indexOf(lines.find { i -> i.contains("\\v $verseEnd")})
-            // checks if the start is less then the end
-            if(start <= end) {
-                lines = ArrayList(lines.subList(start, end+1))
+        if(lines.contains("\\c $chapter")) {
+            // gets a sublist if only certain verses are needed
+            if ((verseStart != null && verseEnd != null)) {
+                // finds the start and end
+                val start = lines.indexOf(lines.find { i -> i.contains("\\v $verseStart") })
+                val end = lines.indexOf(lines.find { i -> i.contains("\\v $verseEnd") })
+                // checks if the start is less then the end
+                if (start < end) {
+                    lines = ArrayList(lines.subList(start, end))
+                }
             }
         }
 
@@ -420,6 +417,14 @@ class MyController: Controller()  {
 
         // returns the full selection
         return selection.joinToString("")
+    }
+
+    fun getResourceBundle(locale: Locale): ResourceBundle{
+        try {
+            return ResourceBundle.getBundle("Labels", locale)
+        } catch (e: MissingResourceException){}
+
+        return ResourceBundle.getBundle("Labels", Locale("en"))
     }
 
 }
