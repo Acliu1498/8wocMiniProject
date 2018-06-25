@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
 import javafx.scene.text.TextAlignment
+//import sun.font.FontFamily
 import tornadofx.*
 import java.io.File
 
@@ -238,7 +239,7 @@ class CenterView: View(){
     // the chapter text
     var bibleText = SimpleStringProperty()
     // the font text
-    var bibleFont = SimpleObjectProperty<Font>(Font(15.0))
+    var bibleFont = SimpleObjectProperty<Font>(Font.font("Noto Naskh Arabic UI", FontWeight.NORMAL, 15.0))
 
     // form to allow to read selection
     init {
@@ -252,7 +253,6 @@ class CenterView: View(){
                         wrapTextProperty().set(true)
                         textAlignmentProperty().value = TextAlignment.CENTER
                         fontProperty().bind(bibleFont)
-
                     }
                     //useMaxWidth = true
                     //useMaxHeight = true
