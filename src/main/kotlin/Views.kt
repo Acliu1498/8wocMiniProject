@@ -203,14 +203,20 @@ class TopView: View(){
                                             book.value = books[books.indexOf(book.value) - 1]
                                             // sets the current chapter value to the last of the previous book
                                             chapter.value = chapters[chapters.size - 1].toString()
+                                            // updates displayed text
+                                            centerView.updateText(myController.search(
+                                                    book.value, chapter.value, null ,null))
+                                        }
+                                        else{
+                                            centerView.updateText("Invalid, try again")
                                         }
                                     } else {
                                         // sets the current chapter value to the previous one
                                         chapter.value = (chapter.value.toInt() - 1).toString()
+                                        // updates displayed text
+                                        centerView.updateText(myController.search(
+                                                book.value, chapter.value, null ,null))
                                     }
-                                    // updates displayed text
-                                    centerView.updateText(myController.search(
-                                            book.value, chapter.value, null ,null))
                                 }
                             }
                             button(resourceBundle.getString("Next")) {
@@ -223,14 +229,20 @@ class TopView: View(){
                                             book.value = books[books.indexOf(book.value) + 1]
                                             // resets chapter value to 1
                                             chapter.value = 1.toString()
+                                            // updates text
+                                            centerView.updateText(myController.search(
+                                                    book.value, chapter.value, null, null))
+                                        }
+                                        else{
+                                            centerView.updateText("Invalid, try again")
                                         }
                                     } else {
                                         // increments chapter value
                                         chapter.value = (chapter.value.toInt() + 1).toString()
+                                        // updates text
+                                        centerView.updateText(myController.search(
+                                                book.value, chapter.value, null, null))
                                     }
-                                    // updates text
-                                    centerView.updateText(myController.search(
-                                            book.value, chapter.value, null, null))
                                     verses.clear()
                                     verses.addAll(myController.getVerses(book.value, chapter.value))
                                 }
