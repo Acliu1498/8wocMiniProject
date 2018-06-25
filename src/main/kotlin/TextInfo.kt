@@ -3,6 +3,8 @@ class CatalogResponse(val languages: List<LanguageResponse>)
 
 // data class for the languages
 class LanguageResponse(
+        val identifier: String,
+        val direction: String,
         val title: String,
         val resources: List<ResourceResponse>
 )
