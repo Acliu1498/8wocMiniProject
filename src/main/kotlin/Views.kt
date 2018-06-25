@@ -373,8 +373,8 @@ class MyController: Controller()  {
             val start = lines.indexOf(lines.find { i -> i.contains("\\v $verseStart")})
             val end = lines.indexOf(lines.find { i -> i.contains("\\v $verseEnd")})
             // checks if the start is less then the end
-            if(start < end) {
-                lines = ArrayList(lines.subList(start, end))
+            if(start <= end) {
+                lines = ArrayList(lines.subList(start, end+1))
             }
         }
 
