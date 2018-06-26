@@ -323,7 +323,7 @@ class CenterView: View(){
         bibleFont.set(Font(size))
     }
 
-    fun updateTextAlign(align: TextAlignment){
+    private fun updateTextAlign(align: TextAlignment){
         textAlign.value = align
     }
 }
