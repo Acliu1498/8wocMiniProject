@@ -1,3 +1,4 @@
+import io.reactivex.ObservableTransformer
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -12,6 +13,11 @@ import javafx.scene.text.TextAlignment
 //import sun.font.FontFamily
 import tornadofx.*
 import java.util.*
+import kotlin.NoSuchElementException
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toObservable
+
+
 
 /**
  * Alex Liu, Jennifer Huang - Wycliffe Associates - 6/20/2018 - 8wocMiniChallenge
@@ -182,6 +188,25 @@ class TopView: View(){
                             button(messages["Change_Text_Size"]) {
                                 // when pressed updates font size
                                 action {
+                                    /*val notNull = ObservableTransformer<String, String> { observable ->
+                                        observable.map { it.trim() }
+                                                .filter {it.value != null && it.value > 0 && it.value < 100}
+                                                .singleOrError()
+                                                .onErrorResumeNext {
+                                                    if(it is NoSuchElementException){
+                                                        Single.error(Exception("Invalid, try again"))
+                                                    }
+                                                    else{
+                                                        Single.error(it)
+                                                    }
+                                                }
+                                                .toObservable()
+
+                                    }*/
+
+
+
+
                                     if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
                                         if (book.value != null && chapter.value != null && language.value != null) {
                                             centerView.updateText(
