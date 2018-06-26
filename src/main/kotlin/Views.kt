@@ -1,3 +1,4 @@
+import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
@@ -180,39 +181,28 @@ class TopView: View(){
                             button(messages["Change_Text_Size"]) {
                                 // when pressed updates font size
                                 action {
-                                    /*val notNull = ObservableTransformer<String, String> { observable ->
-                                        observable.map { it.trim() }
-                                                .filter {it.value != null && it.value > 0 && it.value < 100}
+                                    val notNull = ObservableTransformer<Int, Int> { observable ->
+                                        observable.filter {it != null && it > 0 && it < 100}
                                                 .singleOrError()
                                                 .onErrorResumeNext {
                                                     if(it is NoSuchElementException){
-                                                        Single.error(Exception("Invalid, try again"))
+                                                        error(Exception("Invalid, try again"))
                                                     }
                                                     else{
-                                                        Single.error(it)
+                                                        error(it)
                                                     }
                                                 }
                                                 .toObservable()
-
-                                    }*/
-
-
-
-
-                                    if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
-                                        if (book.value != null && chapter.value != null && language.value != null) {
-                                            centerView.updateText(
-                                                    myController.search(
-                                                            book.value, chapter.value, verseStart.value, verseEnd.value))
-
-                                        }
-                                        centerView.updateFontSize(textSize.doubleValue())
                                     }
-                                    else{
-                                        // else notify user
-                                        centerView.updateText("Invalid, try again")
-                                        textSize.value = 15
-                                    }
+
+                                    Observable.just(textSize.value)
+                                            .compose(notNull)
+                                            .subscribe({retrievedText -> centerView.updateText(
+                                                    myController.search(book.value, chapter.value, verseStart.value,
+                                                            verseEnd.value));
+                                                        centerView.updateFontSize(textSize.doubleValue())},
+                                                    {e -> centerView.updateText("Invalid, try again");
+                                                        centerView.updateFontSize(15.0)})
                                 }
                             }
                         }
