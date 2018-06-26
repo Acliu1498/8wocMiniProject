@@ -173,7 +173,7 @@ class TopView: View(){
                                             direction)
                                 } else {
                                     // else notify user
-                                    centerView.updateText("Invalid, try again", direction)
+                                    centerView.updateText(messages["Change_Text_Size"], direction)
 
                                 }
                             }
@@ -194,7 +194,7 @@ class TopView: View(){
                                                 .singleOrError()
                                                 .onErrorResumeNext {
                                                     if(it is NoSuchElementException){
-                                                        error(Exception("Invalid, try again"))
+                                                        error(Exception(messages["Change_Text_Size"]))
                                                     }
                                                     else{
                                                         error(it)
@@ -206,10 +206,10 @@ class TopView: View(){
                                     Observable.just(textSize.value)
                                             .compose(validInput)
                                             .subscribe({_ -> centerView.updateText(
-                                                    myController.search(book.value, chapter.value, verseStart.value,
-                                                            verseEnd.value));
+                                                        myController.search(book.value, chapter.value, verseStart.value,
+                                                            verseEnd.value), direction)
                                                         centerView.updateFontSize(textSize.doubleValue())},
-                                                    {e -> centerView.updateText("Invalid, try again");
+                                                    {e -> centerView.updateText(messages["Change_Text_Size"], direction)
                                                         centerView.updateFontSize(15.0)})
                                 }
                             }
@@ -232,7 +232,7 @@ class TopView: View(){
                                                     direction)
                                         }
                                         else{
-                                            centerView.updateText("Invalid, try again", direction)
+                                            centerView.updateText(messages["Change_Text_Size"], direction)
                                         }
                                     } else {
                                         // sets the current chapter value to the previous one
@@ -258,7 +258,7 @@ class TopView: View(){
                                                     book.value, chapter.value, null, null), direction)
                                         }
                                         else{
-                                            centerView.updateText("Invalid, try again", direction)
+                                            centerView.updateText(messages["Error_Message"], direction)
                                         }
                                     } else {
                                         // increments chapter value
