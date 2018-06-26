@@ -181,7 +181,7 @@ class TopView: View(){
                             button(messages["Change_Text_Size"]) {
                                 // when pressed updates font size
                                 action {
-                                    val notNull = ObservableTransformer<Int, Int> { observable ->
+                                    val validInput = ObservableTransformer<Int, Int> { observable ->
                                         observable.filter {it != null && it > 0 && it < 100}
                                                 .singleOrError()
                                                 .onErrorResumeNext {
@@ -196,8 +196,8 @@ class TopView: View(){
                                     }
 
                                     Observable.just(textSize.value)
-                                            .compose(notNull)
-                                            .subscribe({retrievedText -> centerView.updateText(
+                                            .compose(validInput)
+                                            .subscribe({_ -> centerView.updateText(
                                                     myController.search(book.value, chapter.value, verseStart.value,
                                                             verseEnd.value));
                                                         centerView.updateFontSize(textSize.doubleValue())},
