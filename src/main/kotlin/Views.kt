@@ -12,6 +12,9 @@ import javafx.scene.text.TextAlignment
 //import sun.font.FontFamily
 import tornadofx.*
 import java.util.*
+import kotlin.NoSuchElementException
+
+
 
 /**
  * Alex Liu, Jennifer Huang - Wycliffe Associates - 6/20/2018 - 8wocMiniChallenge
@@ -151,6 +154,23 @@ class TopView: View(){
                                 borderWidth += box(3.px)
                             }
                             action {
+
+                                val notNull = ObservableTransformer<String, String, String> {observable ->
+                                    observable.map { it.trim() }
+                                            .filter {it.value != null}
+                                            .singleOrError()
+                                            .onErrorResumeNext {
+                                                if(it is NoSuchElementException){
+                                                    Single.error(Exception("Invalid, try again"))
+                                                }
+                                                else{
+                                                    Single.error(it)
+                                                }
+                                            }
+                                }
+
+
+
                                 // checks if the book chapter and language have values the update the text
                                 if (book.value != null && chapter.value != null && language.value != null) {
                                     centerView.updateText(
