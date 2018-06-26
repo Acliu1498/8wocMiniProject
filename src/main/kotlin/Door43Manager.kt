@@ -1,3 +1,4 @@
+import io.requery.sql.platform.SQLite
 import okhttp3.ResponseBody
 import retrofit2.*
 import retrofit2.http.GET
