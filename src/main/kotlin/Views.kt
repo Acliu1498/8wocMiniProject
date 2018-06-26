@@ -41,8 +41,9 @@ class MasterView: View(){
 class TopView: View(){
     // the controller for the application
     private val myController = MyController()
+    private val languageMap = myController.getLanguages()
     // the available languages
-    private val languages = FXCollections.observableArrayList<String>(myController.getLanguages().keys.sorted())
+    private val languages = FXCollections.observableArrayList<String>(languageMap.keys.sorted())
     // string property to hold the language info
     private val language = SimpleStringProperty("English")
     // A collection to hold the names of all the books of the Bible
@@ -63,6 +64,8 @@ class TopView: View(){
     private val centerView = find(CenterView::class)
     // the size of the text
     private val textSize = SimpleIntegerProperty(centerView.getFontSize().toInt())
+    private var direction = "ltr"
+
 
     override val root = Form()
     // form to allow user to make a selection
@@ -74,6 +77,9 @@ class TopView: View(){
             books.clear()
             books.addAll(myController.getBooks(new))
             book.value = books[0]
+            val (identfier,direction) = languageMap.get(language.value)!!
+            this.direction = direction
+
         }
 
         // listener that finds a chapter when called
@@ -153,12 +159,14 @@ class TopView: View(){
                             action {
                                 // checks if the book chapter and language have values the update the text
                                 if (book.value != null && chapter.value != null && language.value != null) {
+
                                     centerView.updateText(
                                             myController.search(
-                                                    book.value, chapter.value, verseStart.value, verseEnd.value))
+                                                    book.value, chapter.value, verseStart.value, verseEnd.value),
+                                            direction)
                                 } else {
                                     // else notify user
-                                    centerView.updateText("Invalid, try again")
+                                    centerView.updateText("Invalid, try again", direction)
 
                                 }
                             }
@@ -178,14 +186,16 @@ class TopView: View(){
                                         if (book.value != null && chapter.value != null && language.value != null) {
                                             centerView.updateText(
                                                     myController.search(
-                                                            book.value, chapter.value, verseStart.value, verseEnd.value))
+                                                            book.value, chapter.value,
+                                                            verseStart.value, verseEnd.value),
+                                                    direction)
 
                                         }
                                         centerView.updateFontSize(textSize.doubleValue())
                                     }
                                     else{
                                         // else notify user
-                                        centerView.updateText("Invalid, try again")
+                                        centerView.updateText("Invalid, try again", direction)
                                         textSize.value = 15
                                     }
                                 }
@@ -205,17 +215,18 @@ class TopView: View(){
                                             chapter.value = chapters[chapters.size - 1].toString()
                                             // updates displayed text
                                             centerView.updateText(myController.search(
-                                                    book.value, chapter.value, null ,null))
+                                                    book.value, chapter.value, null ,null),
+                                                    direction)
                                         }
                                         else{
-                                            centerView.updateText("Invalid, try again")
+                                            centerView.updateText("Invalid, try again", direction)
                                         }
                                     } else {
                                         // sets the current chapter value to the previous one
                                         chapter.value = (chapter.value.toInt() - 1).toString()
                                         // updates displayed text
                                         centerView.updateText(myController.search(
-                                                book.value, chapter.value, null ,null))
+                                                book.value, chapter.value, null ,null), direction)
                                     }
                                 }
                             }
@@ -231,17 +242,18 @@ class TopView: View(){
                                             chapter.value = 1.toString()
                                             // updates text
                                             centerView.updateText(myController.search(
-                                                    book.value, chapter.value, null, null))
+                                                    book.value, chapter.value, null, null), direction)
                                         }
                                         else{
-                                            centerView.updateText("Invalid, try again")
+                                            centerView.updateText("Invalid, try again", direction)
                                         }
                                     } else {
                                         // increments chapter value
                                         chapter.value = (chapter.value.toInt() + 1).toString()
                                         // updates text
                                         centerView.updateText(myController.search(
-                                                book.value, chapter.value, null, null))
+                                                book.value, chapter.value, null, null),direction)
+
                                     }
                                     verses.clear()
                                     verses.addAll(myController.getVerses(book.value, chapter.value))
@@ -262,6 +274,7 @@ class CenterView: View(){
     var bibleText = SimpleStringProperty()
     // the font and size of the Bible verses
     var bibleFont = SimpleObjectProperty<Font>(Font.font("Noto Naskh Arabic UI", FontWeight.NORMAL, 15.0))
+    var textAlign = SimpleObjectProperty<TextAlignment>(TextAlignment.LEFT)
 
     // form to allow to read selection
     init {
@@ -273,7 +286,7 @@ class CenterView: View(){
                         alignmentProperty().value = Pos.CENTER
                         textProperty().bind(bibleText)
                         wrapTextProperty().set(true)
-                        textAlignmentProperty().value = TextAlignment.CENTER
+                        textAlignmentProperty().bind(textAlign)
                         fontProperty().bind(bibleFont)
                     }
                 }
@@ -288,8 +301,12 @@ class CenterView: View(){
     /**
      * Function that updates the text given new text
      */
-    fun updateText(text: String){
+    fun updateText(text: String, direction: String){
         bibleText.value = text
+        when (direction){
+            "ltr" -> updateTextAlign(TextAlignment.LEFT)
+            "rtl" -> updateTextAlign(TextAlignment.RIGHT)
+        }
     }
 
     /**
@@ -304,6 +321,10 @@ class CenterView: View(){
      */
     fun updateFontSize(size: Double){
         bibleFont.set(Font(size))
+    }
+
+    fun updateTextAlign(align: TextAlignment){
+        textAlign.value = align
     }
 }
 
@@ -423,6 +444,7 @@ class MyController: Controller()  {
                 selection.add(it.replace("\\v", "").replace(substr, ""))
             } else if (it.contains("\\p")){
                 // if contains a \p means end of paragraph
+                selection.add(System.lineSeparator())
                 selection.add(System.lineSeparator())
             }
         }
