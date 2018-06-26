@@ -77,14 +77,14 @@ class TopView: View(){
     override val root = Form()
     // form to allow user to make a selection
     init {
-        FX.locale = Locale.CHINA
+        FX.locale = Locale("hi_IN")
         // adds a listener to update books to be in selected language
         language.addListener { obs, old, new ->
             // empties books and adds new ones
             books.clear()
             books.addAll(myController.getBooks(new))
             book.value = books[0]
-            val (identfier,direction) = languageMap.get(language.value)!!
+            val (identifier,direction) = languageMap.get(language.value)!!
             this.direction = direction
 
         }
@@ -116,6 +116,7 @@ class TopView: View(){
                         vbox(0){
                             label (messages["USFM_Reader"]){
                                 style {
+                                    fontFamily = "Noto Naskh Arabic UI"
                                     fontWeight = FontWeight.EXTRA_BOLD
                                     fontSize = 25.px
                                 }
@@ -164,18 +165,10 @@ class TopView: View(){
                                 borderWidth += box(3.px)
                             }
                             action {
-                                // checks if the book chapter and language have values the update the text
-                                if (book.value != null && chapter.value != null && language.value != null) {
-
-                                    centerView.updateText(
+                                centerView.updateText(
                                             myController.search(
                                                     book.value, chapter.value, verseStart.value, verseEnd.value),
                                             direction)
-                                } else {
-                                    // else notify user
-                                    centerView.updateText(messages["Change_Text_Size"], direction)
-
-                                }
                             }
                         }
                         addClass(AppStyle.wrapper)
