@@ -1,3 +1,4 @@
+import io.reactivex.ObservableTransformer
 import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleObjectProperty
@@ -13,6 +14,8 @@ import javafx.scene.text.TextAlignment
 import tornadofx.*
 import java.util.*
 import kotlin.NoSuchElementException
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.rxkotlin.toObservable
 
 
 
@@ -154,23 +157,6 @@ class TopView: View(){
                                 borderWidth += box(3.px)
                             }
                             action {
-
-                                val notNull = ObservableTransformer<String, String, String> {observable ->
-                                    observable.map { it.trim() }
-                                            .filter {it.value != null}
-                                            .singleOrError()
-                                            .onErrorResumeNext {
-                                                if(it is NoSuchElementException){
-                                                    Single.error(Exception("Invalid, try again"))
-                                                }
-                                                else{
-                                                    Single.error(it)
-                                                }
-                                            }
-                                }
-
-
-
                                 // checks if the book chapter and language have values the update the text
                                 if (book.value != null && chapter.value != null && language.value != null) {
                                     centerView.updateText(
@@ -194,6 +180,25 @@ class TopView: View(){
                             button(messages["Change_Text_Size"]) {
                                 // when pressed updates font size
                                 action {
+                                    /*val notNull = ObservableTransformer<String, String> { observable ->
+                                        observable.map { it.trim() }
+                                                .filter {it.value != null && it.value > 0 && it.value < 100}
+                                                .singleOrError()
+                                                .onErrorResumeNext {
+                                                    if(it is NoSuchElementException){
+                                                        Single.error(Exception("Invalid, try again"))
+                                                    }
+                                                    else{
+                                                        Single.error(it)
+                                                    }
+                                                }
+                                                .toObservable()
+
+                                    }*/
+
+
+
+
                                     if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
                                         if (book.value != null && chapter.value != null && language.value != null) {
                                             centerView.updateText(

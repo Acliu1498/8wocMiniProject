@@ -21,9 +21,11 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
+    implementation 'com.github.ReactiveX:rxKotlin:2.2.0'
     compile "com.squareup.retrofit2:retrofit:2.0.0"
     compile "com.squareup.retrofit2:converter-moshi:2.0.0"
     compile "no.tornado:tornadofx:1.7.16"
