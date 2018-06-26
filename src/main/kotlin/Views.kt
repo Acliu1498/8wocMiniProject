@@ -207,9 +207,9 @@ class TopView: View(){
                                             .compose(notNull)
                                             .subscribe({retrievedText -> centerView.updateText(
                                                     myController.search(book.value, chapter.value, verseStart.value,
-                                                            verseEnd.value));
+                                                            verseEnd.value), direction)
                                                         centerView.updateFontSize(textSize.doubleValue())},
-                                                    {e -> centerView.updateText("Invalid, try again");
+                                                    {e -> centerView.updateText("Invalid, try again", direction)
                                                         centerView.updateFontSize(15.0)})
                                 }
                             }
