@@ -132,7 +132,7 @@ class TopView: View(){
                         }
                         // chapter field
                         vbox(5) {
-                            label(messages["Book"])
+                            label(messages["Chapters"])
                             combobox(chapter, chapters)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
@@ -216,7 +216,6 @@ class TopView: View(){
                             }
                         }
                         field {
-                            label(messages["Chapters"])
                             button(messages["Prev"]) {
                                 action {
                                     // checks if the chapter can be decremented
@@ -229,7 +228,7 @@ class TopView: View(){
                                             chapter.value = chapters[chapters.size - 1].toString()
                                             // updates displayed text
                                             centerView.updateText(myController.search(
-                                                    book.value, chapter.value, null ,null),
+                                                    book.value, chapter.value, null,null),
                                                     direction)
                                         }
                                         else{
