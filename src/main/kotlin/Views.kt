@@ -210,6 +210,7 @@ class TopView: View(){
                                                             verseEnd.value), direction)
                                                         centerView.updateFontSize(textSize.doubleValue())},
                                                     {e -> centerView.updateText(messages["Change_Text_Size"], direction)
+
                                                         centerView.updateFontSize(15.0)})
                                 }
                             }

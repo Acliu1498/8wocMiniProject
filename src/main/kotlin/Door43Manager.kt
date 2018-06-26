@@ -61,7 +61,7 @@ class Door43Manager(private val api: Api = Api()){
     /**
      * this function gets the number of chapters in a given book
      */
-    fun getChapters(book: String): ArrayList<String>{
+    fun getChapters(book: String): List<String>{
         // chapters that will be returned
         val chapters = ArrayList<String>()
         // the text in the USFM file
@@ -83,13 +83,13 @@ class Door43Manager(private val api: Api = Api()){
     /**
      * function to get verses from a selection
      */
-    fun getVerses(book: String, chapter: String): ArrayList<String> {
+    fun getVerses(book: String, chapter: String): List<String> {
 
         // verses that will be returned
         val verses = ArrayList<String>()
 
         // the text in the USFM file
-        var text = getUSFM(book)!!
+        var text = getUSFM(book)
         val nextChapter = if (text.contains("\\c ${chapter.toInt() + 1}")){
             text.indexOf("\\c ${chapter.toInt() + 1}")
         } else {
