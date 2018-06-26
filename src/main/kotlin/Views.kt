@@ -63,11 +63,11 @@ class TopView: View(){
     private val centerView = find(CenterView::class)
     // the size of the text
     private val textSize = SimpleIntegerProperty(centerView.getFontSize().toInt())
-    private val resourceBundle = myController.getResourceBundle(Locale.getDefault())
 
     override val root = Form()
     // form to allow user to make a selection
     init {
+        FX.locale = Locale.CHINA
         // adds a listener to update books to be in selected language
         language.addListener { obs, old, new ->
             // empties books and adds new ones
@@ -101,7 +101,7 @@ class TopView: View(){
                     // displays form horizontally
                     hbox(35) {
                         vbox(0){
-                            label (resourceBundle.getString("USFM_Reader")){
+                            label (messages["USFM_Reader"]){
                                 style {
                                     fontWeight = FontWeight.EXTRA_BOLD
                                     fontSize = 25.px
@@ -111,7 +111,7 @@ class TopView: View(){
                         }
                         // book field
                         vbox(5) {
-                            label(resourceBundle.getString("Book"))
+                            label(messages["Book"])
                             combobox(book, books)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
@@ -119,7 +119,7 @@ class TopView: View(){
                         }
                         // chapter field
                         vbox(5) {
-                            label(resourceBundle.getString("Book"))
+                            label(messages["Book"])
                             combobox(chapter, chapters)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
@@ -127,22 +127,22 @@ class TopView: View(){
                         }
                         // language field
                         vbox(5) {
-                            label(resourceBundle.getString("Language"))
+                            label(messages["Language"])
                             combobox(language, languages)
                             style{
                                 fontFamily = "Noto Naskh Arabic UI"
                             }
                         }
                         vbox(5) {
-                            label(resourceBundle.getString("From"))
+                            label(messages["From"])
                             combobox(verseStart, verses)
                         }
                         vbox(5) {
-                            label (resourceBundle.getString("To"))
+                            label (messages["To"])
                             combobox(verseEnd, verses)
                         }
                         // search field
-                        button(resourceBundle.getString("Search")) {
+                        button(messages["Search"]) {
                             setPrefWidth(90.00)
                             setPrefHeight(50.00)
                             style{
@@ -166,12 +166,12 @@ class TopView: View(){
                         addClass(AppStyle.wrapper)
                     }
                     hbox(20) {
-                        field(resourceBundle.getString("Text_Size")) {
+                        field(messages["Text_Size"]) {
                             textfield(textSize){
                                 prefWidth = 50.0
                             }
                             // field for a button to change text size
-                            button(resourceBundle.getString("Change_Text_Size")) {
+                            button(messages["Change_Text_Size"]) {
                                 // when pressed updates font size
                                 action {
                                     if (textSize.value != null && textSize.value > 0 && textSize.value < 100) {
@@ -192,8 +192,8 @@ class TopView: View(){
                             }
                         }
                         field {
-                            label(resourceBundle.getString("Chapters"))
-                            button(resourceBundle.getString("Prev")) {
+                            label(messages["Chapters"])
+                            button(messages["Prev"]) {
                                 action {
                                     // checks if the chapter can be decremented
                                     if (chapter.value.toInt() - 1 < 1) {
@@ -219,7 +219,7 @@ class TopView: View(){
                                     }
                                 }
                             }
-                            button(resourceBundle.getString("Next")) {
+                            button(messages["Next"]) {
                                 action {
                                     // checks if chapter can be incremented
                                     if (chapter.value.toInt() + 1 > chapters.size) {
