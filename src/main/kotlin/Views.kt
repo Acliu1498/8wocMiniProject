@@ -77,7 +77,7 @@ class TopView: View(){
     override val root = Form()
     // form to allow user to make a selection
     init {
-        FX.locale = Locale("hi_IN")
+        FX.locale = Locale("ne_NP")
         // adds a listener to update books to be in selected language
         language.addListener { obs, old, new ->
             // empties books and adds new ones
